@@ -1,18 +1,23 @@
 ﻿using System;
-using Newtonsoft.Json;
+using Artichaut.ConsoleApp.Domain;
+using Artichaut.ConsoleApp.Services;
 
-public class Meteo
+namespace Artichaut.ConsoleApp
 {
-    public string Ville { get; set; }
-    public float Temperature { get; set; }
-}
-
-public class Program
-{
-    public static void Main()
+    class Program
     {
-        var data = new Meteo { Ville = "Paris", Temperature = 24.5f };
-        string json = JsonConvert.SerializeObject(data, Formatting.Indented);
-        Console.WriteLine(json);
+        static void Main(string[] args)
+        {
+            var meteoService = new MeteoService();
+
+            var meteoActuelle = meteoService.ObtenirMeteo("Paris");
+            Console.WriteLine("Conditions actuelles :");
+            Console.WriteLine(meteoActuelle);
+
+            var historique = meteoService.Historique("Paris");
+            Console.WriteLine("\\nHistorique :");
+            foreach (var m in historique)
+                Console.WriteLine(m);
+        }
     }
 }
