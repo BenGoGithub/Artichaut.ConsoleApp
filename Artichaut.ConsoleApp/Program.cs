@@ -1,23 +1,20 @@
-﻿using System;
-using Artichaut.ConsoleApp.Domain;
+﻿using Microsoft.Extensions.Configuration;
 using Artichaut.ConsoleApp.Services;
 
 namespace Artichaut.ConsoleApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            var meteoService = new MeteoService();
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
 
-            var meteoActuelle = meteoService.ObtenirMeteo("Paris");
-            Console.WriteLine("Conditions actuelles :");
-            Console.WriteLine(meteoActuelle);
+            var meteoService = new MeteoApiService(config);
+            var root = await meteoService.ObtenirMeteoAsync();
 
-            var historique = meteoService.Historique("Paris");
-            Console.WriteLine("\\nHistorique :");
-            foreach (var m in historique)
-                Console.WriteLine(m);
+            meteoService.AfficherToutesLesPrevisions(root);
         }
     }
 }
